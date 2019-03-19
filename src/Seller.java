@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Seller extends User {
@@ -11,7 +10,6 @@ public class Seller extends User {
     }
 
     public void setBlocked(boolean isBlocked) {
-
     }
 
 }
