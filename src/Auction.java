@@ -10,19 +10,11 @@ public class Auction {
     private double reservePrice;
     private Date closeDate;
     private char status;
-
-    private Item item;
-    private Seller seller;
-    private Buyer buyer;
+    Item item;
+    Seller seller;
+    Buyer buyer;
 
     private List<Bid> bids;
-
-
-    public Auction(Item item, Seller seller, Buyer buyer) {
-        this.item = item;
-        this.seller = seller;
-        this.buyer = buyer;
-    }
 
     /*
 
@@ -58,29 +50,4 @@ public class Auction {
     public void setBlocked() {
 
     }
-
-
-    class Buyer {
-
-        Buyer() {
-
-        }
-    }
-
-    class Seller {
-
-        Seller() {
-
-        }
-    }
-
-
-    class Item {
-
-        Item() {
-
-        }
-    }
-
-
 }
