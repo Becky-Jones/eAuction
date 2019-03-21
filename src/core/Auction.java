@@ -64,4 +64,24 @@ public class Auction {
     public void setBlocked() {
 
     }
+
+    public double getStartPrice() {
+        return startPrice;
+    }
+
+    public double getReservePrice() {
+        return reservePrice;
+    }
+
+    public Date getCloseDate() {
+        return closeDate;
+    }
+
+    public char getStatus() {
+        return status;
+    }
+
+    public String getItemDescription() {
+        return item.getDescription();
+    }
 }
