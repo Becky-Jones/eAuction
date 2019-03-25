@@ -12,7 +12,7 @@ public class Sys {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private static ArrayList<User> users;
-    Scanner scanner = new Scanner(java.lang.System.in);
+    private final Scanner scanner = new Scanner(java.lang.System.in);
 
     public void placeAuction() {
     }
@@ -32,11 +32,33 @@ public class Sys {
                 counter++;
             }
         }
-        java.lang.System.out.println(stringBuffer);
+        System.out.println(stringBuffer);
     }
 
-    public void setUpAccount() {
+    private void setUpAccount() {
+        System.out.println("Please enter a username: ");
 
+        String username = scanner.nextLine();
+
+        boolean usernameValid = false;
+
+        // check if the username is a valid name
+        while (!usernameValid) {
+            // if a user exists with this name then they cannot create a user with this username
+            if (getUserByUsername(username) == null) usernameValid = true;
+        }
+
+        System.out.println("Now please enter a password: ");
+        String password = scanner.nextLine();
+
+        System.out.println("Please confirm your password: ");
+
+        String confirmPassword = scanner.nextLine();
+
+        if (password.equals(confirmPassword)) {
+            // valid! lets create this user
+            users.add(new User(username, password));
+        }
     }
 
     public void startMenu(List<Auction> auctions) {
@@ -56,6 +78,7 @@ public class Sys {
 
         switch (option) {
             case "1": /* set up account*/
+                setUpAccount();
                 break;
             case "2":
                 login();
