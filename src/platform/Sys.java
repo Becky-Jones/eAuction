@@ -5,7 +5,6 @@ import core.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,6 +12,7 @@ public class Sys {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private static ArrayList<User> users;
+    Scanner scanner = new Scanner(java.lang.System.in);
 
     public void placeAuction() {
     }
@@ -52,14 +52,13 @@ public class Sys {
         System.out.println("3. Browse Auctions");
         System.out.println("4. Quit");
 
-        Scanner scanner = new Scanner(java.lang.System.in);
-
         String option = scanner.nextLine();
 
         switch (option) {
             case "1": /* set up account*/
                 break;
             case "2":
+                login();
                 break;
             case "3":
                 browseAuction(auctions);
@@ -69,4 +68,36 @@ public class Sys {
                 System.exit(0);
         }
     }
+
+    private User getUserByUsername(String username) {
+        for (User user : users) {
+            // check if the user exists
+            if (user.getUsername().equals(username)) {
+                // user exists
+                return user;
+            }
+        }
+        // user doesn't exist
+        return null;
+    }
+
+    private boolean login() {
+        User user;
+
+        System.out.println("Please enter your username: ");
+        String username = scanner.nextLine();
+
+        user = getUserByUsername(username);
+
+        // user doesn't exist
+        if (user == null) return false;
+
+        // now we need to check their password!!
+        System.out.println("Please enter your password: ");
+
+        String password = scanner.nextLine();
+
+        return user.getPassword().equals(password);
+    }
+
 }
