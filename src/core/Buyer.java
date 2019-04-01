@@ -6,8 +6,12 @@ public class Buyer extends User {
 
     private List<Auction> auctions;
 
-    public void victory() {
-
+    public void victory(Auction auction) {
+        System.out.println("Buyer with username \'" +
+                this.getUsername() +
+                "\' was the victor in this auction: " +
+                auction.getItemDescription()
+        );
     }
 
     @Override

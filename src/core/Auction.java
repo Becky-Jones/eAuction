@@ -49,6 +49,23 @@ public class Auction {
      */
     public void close() {
 
+        List bids = getBids();
+
+
+        if(bids.size() == 0){
+            // auction is expired
+        }
+        else{
+            buyer.victory(this);
+        }
+        // Set auction status to closed
+        this.status = 'C';
+
+        // TODO: Check if the auction was won or expired
+        // TODO: Call victory()
+
+
+
     }
 
     /*
@@ -94,6 +111,27 @@ public class Auction {
     public String getItemDescription() {
         return item.getDescription();
     }
+
+    public List getBids(){
+        return this.bids;
+    }
+
+    public Bid getWinningBid(){
+
+        Bid winningBid = new Bid(0.00,null,null);
+
+        for(Bid bid : this.bids) {
+            if (bid.getAmount() > winningBid.getAmount()) {
+                winningBid = bid;
+            }
+        }
+
+        // Notifying Victorious Buyer
+        winningBid.getWho().victory(this);
+
+        return winningBid;
+    }
+
 
     @Override
     public String toString() {
