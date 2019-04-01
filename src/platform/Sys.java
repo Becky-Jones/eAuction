@@ -1,13 +1,10 @@
 package platform;
 
-import core.Auction;
-import core.Status;
-import core.User;
+import core.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sys {
@@ -15,6 +12,8 @@ public class Sys {
 
     private static ArrayList<User> users;
     private final Scanner scanner = new Scanner(java.lang.System.in);
+    List<Auction> auctions = new LinkedList<>();
+    Seller loggedInUser;
 
     public void placeAuction() {
     }
@@ -63,7 +62,7 @@ public class Sys {
         }
     }
 
-    public void startMenu(List<Auction> auctions) {
+    public void startMenu() {
         // is user logged in?
         // yes
         // userMenu();
@@ -87,6 +86,56 @@ public class Sys {
                 break;
             case "3":
                 browseAuction(auctions);
+                break;
+            default:
+                System.out.println("Goodbye");
+                System.exit(0);
+        }
+    }
+
+    private void SellerMenu() throws ParseException {
+        System.out.println(" which would you like?");
+        System.out.println("1. Create Auction");
+        System.out.println("2. Verify Auction");
+        System.out.println("3. Logout");
+        System.out.println("4. Quit");
+
+        String option = scanner.nextLine();
+
+        switch (option) {
+            case "1":
+                createAuction();
+                break;
+            case "2":
+                verifyAuction();
+                break;
+            case "3":
+                logout();
+                break;
+            default:
+                System.out.println("Goodbye");
+                System.exit(0);
+        }
+    }
+
+    private void BuyerMenu() {
+        System.out.println(" which would you like?");
+        System.out.println("1. Browse Active Auctions");
+        System.out.println("2. Bid On Auction");
+        System.out.println("3. Logout");
+        System.out.println("4. Quit");
+
+        String option = scanner.nextLine();
+
+        switch (option) {
+            case "1": /* set up account*/
+                browseAuction(auctions);
+                break;
+            case "2":
+                placeBid();
+                break;
+            case "3":
+                logout();
                 break;
             default:
                 System.out.println("Goodbye");
@@ -123,6 +172,52 @@ public class Sys {
         String password = scanner.nextLine();
 
         return user.getPassword().equals(password);
+    }
+
+    private void createAuction() throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
+        System.out.println("Please enter the item description for your auction");
+        String itemDesc = scanner.nextLine();
+
+        System.out.println("Please enter the start price for your auction");
+        double startPrice = scanner.nextDouble();
+
+        System.out.println("Please enter the reserve price for your auction");
+        double reservePrice = scanner.nextDouble();
+
+        System.out.println("Please enter the close date for your auction");
+        String closeDate = scanner.nextLine();
+
+        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), 'P', new Item(itemDesc), loggedInUser);
+        auctions.add(auction);
+
+        System.out.println("Auction created, The auction is now in a pending state and must first be verified");
+    }
+
+    private void verifyAuction() {
+
+        List<Auction> pendingAuctions = auctions.stream().filter(o -> o.getStatus().equals("P")).collect(Collectors.toList());
+
+        if (pendingAuctions.size() == 0) {
+            System.out.println("There are no pending auctions for your account");
+        } else {
+            System.out.println("Which auction would you like to verify?");
+            int i = 0;
+            for (Auction auction : pendingAuctions) {
+                System.out.println("Auction " + i + " " + auction.getItemDescription());
+            }
+
+            int choice = scanner.nextInt();
+
+            auctions.get(choice).verify();
+        }
+    }
+
+    private void placeBid() {
+    }
+
+    private void logout() {
     }
 
 }
