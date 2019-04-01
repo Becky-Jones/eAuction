@@ -14,4 +14,13 @@ public class Seller extends User {
     public void setBlocked(boolean isBlocked) {
     }
 
+    @Override
+    public boolean block() {
+        return false;
+    }
+
+    @Override
+    public boolean unBlock() {
+        return false;
+    }
 }

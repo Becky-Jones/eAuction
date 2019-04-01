@@ -1,8 +1,13 @@
 package core;
 
-public class User {
+
+public abstract class User implements Blockable, Runnable {
     protected String username;
     protected String password;
+
+
+    public User() {
+    }
 
     public User(String username, String password) {
         this.username = username;
@@ -28,4 +33,10 @@ public class User {
     public boolean checkPassword() {
         return false;
     }
+
+    @Override
+    public void run(){
+
+    }
+
 }

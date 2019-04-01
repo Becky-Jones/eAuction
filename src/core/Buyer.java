@@ -9,4 +9,14 @@ public class Buyer extends User {
     public void victory() {
 
     }
+
+    @Override
+    public boolean block() {
+        return false;
+    }
+
+    @Override
+    public boolean unBlock() {
+        return false;
+    }
 }

@@ -1,12 +1,14 @@
 package platform;
 
 import core.Auction;
+import core.Status;
 import core.User;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Sys {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -18,21 +20,21 @@ public class Sys {
     }
 
     private void browseAuction(List<Auction> auctions) {
-        int counter = 1;
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("====================================== \n");
-        for (Auction auction : auctions) {
-            if (auction.getStatus() == 'A') {
-                stringBuffer.append("Auction ").append(counter).append("\n").append("======================================").append("\n");
-                stringBuffer.append("Start Price: £").append(auction.getStartPrice()).append("\n");
-                stringBuffer.append("Reserve Price: £").append(auction.getReservePrice()).append("\n");
-                stringBuffer.append("Item Description: ").append(auction.getItemDescription()).append("\n");
-                stringBuffer.append("Close Date: ").append(auction.getCloseDate()).append("\n");
-                stringBuffer.append("======================================").append("\n");
-                counter++;
-            }
-        }
-        System.out.println(stringBuffer);
+//        for (Auction auction : auctions) {
+//            if (auction.getStatus() == 'A') {
+//                stringBuffer.append("Auction ").append(counter).append("\n").append("======================================").append("\n");
+//                stringBuffer.append("Start Price: £").append(auction.getStartPrice()).append("\n");
+//                stringBuffer.append("Reserve Price: £").append(auction.getReservePrice()).append("\n");
+//                stringBuffer.append("Item Description: ").append(auction.getItemDescription()).append("\n");
+//                stringBuffer.append("Close Date: ").append(auction.getCloseDate()).append("\n");
+//                stringBuffer.append("======================================").append("\n");
+//                counter++;
+//            }
+//        }
+        List<Auction> activeAuctions =
+                auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
+
+        System.out.println(activeAuctions.toString());
     }
 
     private void setUpAccount() {
@@ -57,7 +59,7 @@ public class Sys {
 
         if (password.equals(confirmPassword)) {
             // valid! lets create this user
-            users.add(new User(username, password));
+//            users.add(new User(username, password));
         }
     }
 

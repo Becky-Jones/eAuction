@@ -77,11 +77,26 @@ public class Auction {
         return closeDate;
     }
 
-    public char getStatus() {
-        return status;
+    public Status getStatus() {
+        switch (status) {
+            case 'A':
+                return Status.ACTIVE;
+            case 'C':
+                return Status.CLOSED;
+            case 'P':
+                return Status.PENDING;
+            case 'B':
+                return Status.BLOCKED;
+        }
+        return Status.CLOSED;
     }
 
     public String getItemDescription() {
         return item.getDescription();
+    }
+
+    @Override
+    public String toString() {
+        return getItemDescription();
     }
 }
