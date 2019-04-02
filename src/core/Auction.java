@@ -41,7 +41,7 @@ public class Auction {
 
      */
     public void verify() {
-
+        this.status = Status.ACTIVE;
     }
 
     /*

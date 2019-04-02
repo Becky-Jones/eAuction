@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 public class Sys {
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    private static ArrayList<User> users;
+    private static List<User> users = new LinkedList<>();
     private final Scanner scanner = new Scanner(java.lang.System.in);
-    List<Auction> auctions = new LinkedList<>();
-    Seller loggedInUser;
+    private List<Auction> auctions = new LinkedList<>();
+    private User loggedInUser;
 
     public void placeAuction() {
     }
@@ -33,7 +33,13 @@ public class Sys {
         List<Auction> activeAuctions =
                 auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
 
-        System.out.println(activeAuctions.toString());
+        int i = 1;
+        for (Auction auction : activeAuctions) {
+            System.out.print("Auction " + i + ": ");
+            System.out.println(auction.getItemDescription());
+            i++;
+        }
+        System.out.println();
     }
 
     private void setUpAccount() throws ParseException {
@@ -63,11 +69,9 @@ public class Sys {
             if (userType.equalsIgnoreCase("S") || userType.equalsIgnoreCase("Seller")) {
                 users.add(new Seller(username, password));
                 System.out.println("Your account has been successfully created");
-                sellerMenu();
             } else {
                 users.add(new Buyer(username, password));
                 System.out.println("Your account has been successfully created");
-                buyerMenu();
             }
         } else {
             System.out.println("Sorry there was a problem creating your account, please try again");
@@ -75,38 +79,48 @@ public class Sys {
 
     }
 
-    public void startMenu() throws ParseException {
-        // is user logged in?
-        // yes
-        // userMenu();
+    void startMenu(List<User> users, List<Auction> auctions) throws ParseException {
+        this.users = users;
+        this.auctions = auctions;
+        String option = "";
+        do {
+            if (loggedInUser != null) {
+                if (Seller.class.isInstance(loggedInUser)) {
+                    // they are a seller
+                    sellerMenu();
+                } else {
+                    // they are a buyer
+                    buyerMenu();
+                }
+            } else {
+                System.out.println(" which would you like?");
+                System.out.println("1. Create Account");
+                System.out.println("2. Login");
+                System.out.println("3. Browse Auctions");
+                System.out.println("4. Quit");
 
-        // no
-        // guest menu();
-        System.out.println(" which would you like?");
-        System.out.println("1. Create Account");
-        System.out.println("2. Login");
-        System.out.println("3. Browse Auctions");
-        System.out.println("4. Quit");
+                option = scanner.nextLine();
 
-        String option = scanner.nextLine();
-
-        switch (option) {
-            case "1": /* set up account*/
-                setUpAccount();
-                break;
-            case "2":
-                login();
-                break;
-            case "3":
-                browseAuction(auctions);
-                break;
-            default:
-                System.out.println("Goodbye");
-                System.exit(0);
-        }
+                switch (option) {
+                    case "1": /* set up account*/
+                        setUpAccount();
+                        break;
+                    case "2":
+                        login();
+                        break;
+                    case "3":
+                        browseAuction(auctions);
+                        break;
+                    default:
+                        System.out.println("Goodbye");
+                        System.exit(0);
+                }
+            }
+        } while (!option.equals("4"));
     }
 
     private void sellerMenu() throws ParseException {
+        scanner.reset();
         System.out.println(" which would you like?");
         System.out.println("1. Create Auction");
         System.out.println("2. Verify Auction");
@@ -117,7 +131,7 @@ public class Sys {
 
         switch (option) {
             case "1":
-                createAuction();
+                createAuction((Seller) loggedInUser);
                 break;
             case "2":
                 verifyAuction();
@@ -125,7 +139,7 @@ public class Sys {
             case "3":
                 logout();
                 break;
-            default:
+            case "4":
                 System.out.println("Goodbye");
                 System.exit(0);
         }
@@ -141,7 +155,7 @@ public class Sys {
         String option = scanner.nextLine();
 
         switch (option) {
-            case "1": /* set up account*/
+            case "1":
                 browseAuction(auctions);
                 break;
             case "2":
@@ -157,18 +171,23 @@ public class Sys {
     }
 
     private User getUserByUsername(String username) {
+
+//        Optional<User> user = users.stream().filter(o -> o.getUsername().equalsIgnoreCase(username)).reduce((a, b) -> null);
+
+//        if (user.isPresent()) {
+//            return user.get();
+//        }
         for (User user : users) {
-            // check if the user exists
-            if (user.getUsername().equals(username)) {
-                // user exists
+            if (user.getUsername().equalsIgnoreCase(username)) {
                 return user;
             }
         }
+
         // user doesn't exist
         return null;
     }
 
-    private boolean login() {
+    private void login() {
         User user;
 
         System.out.println("Please enter your username: ");
@@ -177,17 +196,27 @@ public class Sys {
         user = getUserByUsername(username);
 
         // user doesn't exist
-        if (user == null) return false;
+        if (user == null) {
+            System.out.println("Sorry those details are incorrect");
+            return;
+        }
 
         // now we need to check their password!!
         System.out.println("Please enter your password: ");
 
         String password = scanner.nextLine();
 
-        return user.getPassword().equals(password);
+        if (user.getPassword().equals(password)) {
+            loggedInUser = user;
+            // login successful
+
+        } else {
+            // password incorrect
+            System.out.println("Sorry those details are incorrect");
+        }
     }
 
-    private void createAuction() throws ParseException {
+    private void createAuction(Seller seller) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         System.out.println("Please enter the item description for your auction");
@@ -200,9 +229,9 @@ public class Sys {
         double reservePrice = scanner.nextDouble();
 
         System.out.println("Please enter the close date for your auction");
-        String closeDate = scanner.nextLine();
+        String closeDate = scanner.next();
 
-        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), Status.PENDING, new Item(itemDesc), loggedInUser);
+        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), Status.PENDING, new Item(itemDesc), seller);
         auctions.add(auction);
 
         System.out.println("Auction created, The auction is now in a pending state and must first be verified");
@@ -219,11 +248,14 @@ public class Sys {
             int i = 0;
             for (Auction auction : pendingAuctions) {
                 System.out.println("Auction " + i + " " + auction.getItemDescription());
+                i++;
             }
 
             int choice = scanner.nextInt();
 
+
             auctions.get(choice).verify();
+            System.out.println("Auction Verified");
         }
     }
 
@@ -231,6 +263,7 @@ public class Sys {
     }
 
     private void logout() {
+        loggedInUser = null;
     }
 
 }
