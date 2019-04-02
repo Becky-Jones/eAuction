@@ -5,6 +5,7 @@ import core.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ public class Entry {
                 new Auction(10, 15, format.parse("2019-01-01"), Status.ACTIVE, new Item("A book"), (Seller) users.get(1)), new Auction(30, 70,
                         format.parse("2019-01-01"), Status.ACTIVE, new Item("A pair of shoes"), (Seller) users.get(0))));
 
+//        LocalDateTime.now().plus(SOMTHING.SECONDS(40));
         sys.startMenu(users, auctions);
     }
 }
