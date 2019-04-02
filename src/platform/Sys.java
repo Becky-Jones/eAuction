@@ -189,7 +189,7 @@ public class Sys {
         System.out.println("Please enter the close date for your auction");
         String closeDate = scanner.nextLine();
 
-        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), 'P', new Item(itemDesc), loggedInUser);
+        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), Status.PENDING, new Item(itemDesc), loggedInUser);
         auctions.add(auction);
 
         System.out.println("Auction created, The auction is now in a pending state and must first be verified");

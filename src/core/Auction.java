@@ -11,7 +11,7 @@ public class Auction {
     private double startPrice;
     private double reservePrice;
     private Date closeDate;
-    private char status;
+    private Status status;
     Item item;
     Seller seller;
     Buyer buyer;
@@ -21,7 +21,7 @@ public class Auction {
     public Auction() {
     }
 
-    public Auction(double startPrice, double reservePrice, Date closeDate, char status, Item item, Seller seller) {
+    public Auction(double startPrice, double reservePrice, Date closeDate, Status status, Item item, Seller seller) {
         this.startPrice = startPrice;
         this.reservePrice = reservePrice;
         this.closeDate = closeDate;
@@ -52,18 +52,16 @@ public class Auction {
         List bids = getBids();
 
 
-        if(bids.size() == 0){
+        if (bids.size() == 0) {
             // auction is expired
-        }
-        else{
+        } else {
             buyer.victory(this);
         }
         // Set auction status to closed
-        this.status = 'C';
+        this.status = Status.CLOSED;
 
         // TODO: Check if the auction was won or expired
         // TODO: Call victory()
-
 
 
     }
@@ -95,32 +93,22 @@ public class Auction {
     }
 
     public Status getStatus() {
-        switch (status) {
-            case 'A':
-                return Status.ACTIVE;
-            case 'C':
-                return Status.CLOSED;
-            case 'P':
-                return Status.PENDING;
-            case 'B':
-                return Status.BLOCKED;
-        }
-        return Status.CLOSED;
+        return status;
     }
 
     public String getItemDescription() {
         return item.getDescription();
     }
 
-    public List getBids(){
+    public List getBids() {
         return this.bids;
     }
 
-    public Bid getWinningBid(){
+    public Bid getWinningBid() {
 
-        Bid winningBid = new Bid(0.00,null,null);
+        Bid winningBid = new Bid(0.00, null, null);
 
-        for(Bid bid : this.bids) {
+        for (Bid bid : this.bids) {
             if (bid.getAmount() > winningBid.getAmount()) {
                 winningBid = bid;
             }

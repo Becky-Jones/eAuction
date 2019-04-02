@@ -3,6 +3,7 @@ package platform;
 import core.Auction;
 import core.Item;
 import core.Seller;
+import core.Status;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,11 +21,11 @@ public class Entry {
         Sys sys = new Sys();
         ArrayList<Auction> auctions;
 
-        auctions = new ArrayList<>(Arrays.asList(new Auction(10000, 15000, format.parse("2019-01-01"), 'A', new Item("A car"), new Seller()),
-                new Auction(10, 15, format.parse("2019-01-01"), 'A', new Item("A book"), new Seller()), new Auction(30, 70,
-                        format.parse("2019-01-01"), 'A', new Item("A pair of shoes"), new Seller())));
+        auctions = new ArrayList<>(Arrays.asList(new Auction(10000, 15000, format.parse("2019-01-01"), Status.ACTIVE, new Item("A car"), new Seller()),
+                new Auction(10, 15, format.parse("2019-01-01"), Status.ACTIVE, new Item("A book"), new Seller()), new Auction(30, 70,
+                        format.parse("2019-01-01"), Status.ACTIVE, new Item("A pair of shoes"), new Seller())));
 
 
-        sys.startMenu(auctions);
+        sys.startMenu();
     }
 }
