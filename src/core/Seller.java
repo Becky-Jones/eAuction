@@ -7,6 +7,11 @@ public class Seller extends User {
     private List<Item> items;
     private List<Auction> auctions;
 
+
+    public Seller(String username, String password) {
+        super(username, password);
+    }
+
     public boolean isBlocked() {
         return false;
     }

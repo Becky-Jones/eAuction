@@ -36,7 +36,7 @@ public class Sys {
         System.out.println(activeAuctions.toString());
     }
 
-    private void setUpAccount() {
+    private void setUpAccount() throws ParseException {
         System.out.println("Please enter a username: ");
 
         String username = scanner.nextLine();
@@ -53,16 +53,29 @@ public class Sys {
         String password = scanner.nextLine();
 
         System.out.println("Please confirm your password: ");
-
         String confirmPassword = scanner.nextLine();
+
+        System.out.println("Would you like to be a buyer or seller (B | S)?");
+        String userType = scanner.nextLine();
 
         if (password.equals(confirmPassword)) {
             // valid! lets create this user
-//            users.add(new User(username, password));
+            if (userType.equalsIgnoreCase("S") || userType.equalsIgnoreCase("Seller")) {
+                users.add(new Seller(username, password));
+                System.out.println("Your account has been successfully created");
+                sellerMenu();
+            } else {
+                users.add(new Buyer(username, password));
+                System.out.println("Your account has been successfully created");
+                buyerMenu();
+            }
+        } else {
+            System.out.println("Sorry there was a problem creating your account, please try again");
         }
+
     }
 
-    public void startMenu() {
+    public void startMenu() throws ParseException {
         // is user logged in?
         // yes
         // userMenu();
@@ -93,7 +106,7 @@ public class Sys {
         }
     }
 
-    private void SellerMenu() throws ParseException {
+    private void sellerMenu() throws ParseException {
         System.out.println(" which would you like?");
         System.out.println("1. Create Auction");
         System.out.println("2. Verify Auction");
@@ -118,7 +131,7 @@ public class Sys {
         }
     }
 
-    private void BuyerMenu() {
+    private void buyerMenu() {
         System.out.println(" which would you like?");
         System.out.println("1. Browse Active Auctions");
         System.out.println("2. Bid On Auction");

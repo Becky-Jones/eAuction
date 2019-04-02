@@ -6,6 +6,10 @@ public class Buyer extends User {
 
     private List<Auction> auctions;
 
+    public Buyer(String username, String password) {
+        super(username, password);
+    }
+
     public void victory(Auction auction) {
         System.out.println("Buyer with username \'" +
                 this.getUsername() +
