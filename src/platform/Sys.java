@@ -197,7 +197,7 @@ public class Sys {
 
     private void verifyAuction() {
 
-        List<Auction> pendingAuctions = auctions.stream().filter(o -> o.getStatus().equals("P")).collect(Collectors.toList());
+        List<Auction> pendingAuctions = auctions.stream().filter(o -> o.getStatus().equals(Status.PENDING)).collect(Collectors.toList());
 
         if (pendingAuctions.size() == 0) {
             System.out.println("There are no pending auctions for your account");
