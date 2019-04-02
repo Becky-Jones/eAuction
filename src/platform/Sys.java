@@ -244,19 +244,25 @@ public class Sys {
         if (pendingAuctions.size() == 0) {
             System.out.println("There are no pending auctions for your account");
         } else {
-            System.out.println("Which auction would you like to verify?");
-            int i = 0;
+            System.out.println("Which auction would you like to verify? (enter the auction number)");
+
+            int i = 1;
+            Map<Integer, Auction> options = new HashMap<>();
+
             for (Auction auction : pendingAuctions) {
-                System.out.println("Auction " + i + " " + auction.getItemDescription());
+                options.put(i, auction);
+                System.out.println("Auction " + i + ": " + auction.getItemDescription());
                 i++;
             }
 
             int choice = scanner.nextInt();
 
+            Auction chosen = options.get(choice);
 
-            auctions.get(choice).verify();
+            chosen.verify();
             System.out.println("Auction Verified");
         }
+
     }
 
     private void placeBid() {
