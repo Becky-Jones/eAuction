@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Sys {
 
     private static List<User> users = new LinkedList<>();
-    private final Scanner scanner = new Scanner(java.lang.System.in);
+    private final Scanner scanner = new Scanner(System.in);
     private List<Auction> auctions = new LinkedList<>();
     private User loggedInUser;
 
