@@ -283,12 +283,14 @@ public class Sys {
 
         if (auction.getBids() != null) {
             List<Bid> bids = auction.getBids();
-            for (Bid bid : bids) {
-                if (bid.getAmount() >= minimum) {
-                    minimum = bid.getAmount();
-                }
-            }
+
+            // get the maximum bid out of the list of bids
+            Bid maximumBid = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get();
+
+            // set the minimum
+            minimum = maximumBid.getAmount();
         }
+
         double maximum = minimum * 1.2;
         minimum *= 1.1;
         boolean validBid = false;
