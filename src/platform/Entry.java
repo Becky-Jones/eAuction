@@ -25,11 +25,9 @@ public class Entry {
         users.add(new Seller("Test", "1234"));
 
 
-        //TODO: FORMAT DATE/TIME in YYYY-MM-DD HH-MM-SS
-        auctions = new ArrayList<>(Arrays.asList(new Auction(10000, 15000, LocalDateTime.parse("2019-01-01 12:00:00"), Status.ACTIVE, new Item("A car"), (Seller) users.get(0)),
-                new Auction(10, 15, LocalDateTime.parse("2019-01-01 12:00:00"), Status.ACTIVE, new Item("A book"), (Seller) users.get(1)), new Auction(30, 70,
-                        LocalDateTime.parse("2019-01-01 12:00:00"), Status.ACTIVE, new Item("A pair of shoes"), (Seller) users.get(0))));
-
+        auctions = new ArrayList<>(Arrays.asList(new Auction(10000, 15000, LocalDateTime.now().plusSeconds(40), Status.ACTIVE, new Item("A car"), (Seller) users.get(0)),
+                new Auction(10, 15, LocalDateTime.now().plusSeconds(60), Status.ACTIVE, new Item("A book"), (Seller) users.get(1)), new Auction(30, 70,
+                        LocalDateTime.now().plusSeconds(200), Status.ACTIVE, new Item("A pair of shoes"), (Seller) users.get(0))));
 
 
         final StatusCheck statusCheck = new StatusCheck(auctions, 5);
