@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Entry {
 
@@ -24,10 +26,30 @@ public class Entry {
         users.add(new Seller("Test", "1234"));
 
 
+        //TODO: FORMAT DATE/TIME in YYYY-MM-DD HH-MM-SS
         auctions = new ArrayList<>(Arrays.asList(new Auction(10000, 15000, format.parse("2019-01-01"), Status.ACTIVE, new Item("A car"), (Seller) users.get(0)),
                 new Auction(10, 15, format.parse("2019-01-01"), Status.ACTIVE, new Item("A book"), (Seller) users.get(1)), new Auction(30, 70,
                         format.parse("2019-01-01"), Status.ACTIVE, new Item("A pair of shoes"), (Seller) users.get(0))));
 
+
+        final StatusCheck statusCheck = new StatusCheck(auctions, 5);
+        Runnable timer = new Runnable() {
+            @Override
+            public void run() {
+                statusCheck.run();
+            }
+        };
+
+        // 1 thread for the timer
+        ExecutorService es = Executors.newFixedThreadPool(1);
+
+        // start timer thread
+        es.submit(timer);
+
+        // Start Menu Sequence
         sys.startMenu(users, auctions);
+
+        // Close all threads
+        es.shutdown();
     }
 }

@@ -1,5 +1,6 @@
 package core;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class Auction {
 
     private double startPrice;
     private double reservePrice;
-    private Date closeDate;
+    private LocalDateTime closeDate;
     private Status status;
     Item item;
     Seller seller;
@@ -21,7 +22,7 @@ public class Auction {
     public Auction() {
     }
 
-    public Auction(double startPrice, double reservePrice, Date closeDate, Status status, Item item, Seller seller) {
+    public Auction(double startPrice, double reservePrice, LocalDateTime closeDate, Status status, Item item, Seller seller) {
         this.startPrice = startPrice;
         this.reservePrice = reservePrice;
         this.closeDate = closeDate;
@@ -88,7 +89,7 @@ public class Auction {
         return reservePrice;
     }
 
-    public Date getCloseDate() {
+    public LocalDateTime getCloseDate() {
         return closeDate;
     }
 
