@@ -4,6 +4,7 @@ import core.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -231,7 +232,7 @@ public class Sys {
         System.out.println("Please enter the close date for your auction");
         String closeDate = scanner.next();
 
-        Auction auction = new Auction(startPrice, reservePrice, format.parse(closeDate), Status.PENDING, new Item(itemDesc), seller);
+        Auction auction = new Auction(startPrice, reservePrice, LocalDateTime.parse(closeDate), Status.PENDING, new Item(itemDesc), seller);
         auctions.add(auction);
 
         System.out.println("Auction created, The auction is now in a pending state and must first be verified");
@@ -244,19 +245,25 @@ public class Sys {
         if (pendingAuctions.size() == 0) {
             System.out.println("There are no pending auctions for your account");
         } else {
-            System.out.println("Which auction would you like to verify?");
-            int i = 0;
+            System.out.println("Which auction would you like to verify? (enter the auction number)");
+
+            int i = 1;
+            Map<Integer, Auction> options = new HashMap<>();
+
             for (Auction auction : pendingAuctions) {
-                System.out.println("Auction " + i + " " + auction.getItemDescription());
+                options.put(i, auction);
+                System.out.println("Auction " + i + ": " + auction.getItemDescription());
                 i++;
             }
 
             int choice = scanner.nextInt();
 
+            Auction chosen = options.get(choice);
 
-            auctions.get(choice).verify();
+            chosen.verify();
             System.out.println("Auction Verified");
         }
+
     }
 
     private void placeBid() {

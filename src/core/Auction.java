@@ -78,7 +78,6 @@ public class Auction {
 
      */
     public void setBlocked() {
-
     }
 
     public double getStartPrice() {
