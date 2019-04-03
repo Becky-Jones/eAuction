@@ -39,7 +39,7 @@ public class Auction {
     public void placeBid(Bid userBid) {
         this.bids.add(userBid);
 
-        if (userBid.getAmount() == reservePrice) {
+        if (userBid.getAmount() >= reservePrice) {
             // reserve price as been met, auction must be closed
             close();
         }
