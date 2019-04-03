@@ -4,87 +4,28 @@ import core.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sys {
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
     private static List<User> users = new LinkedList<>();
     private final Scanner scanner = new Scanner(java.lang.System.in);
     private List<Auction> auctions = new LinkedList<>();
     private User loggedInUser;
 
-    public void placeAuction() {
-    }
-
-    private void browseAuction(List<Auction> auctions) {
-//        for (Auction auction : auctions) {
-//            if (auction.getStatus() == 'A') {
-//                stringBuffer.append("Auction ").append(counter).append("\n").append("======================================").append("\n");
-//                stringBuffer.append("Start Price: £").append(auction.getStartPrice()).append("\n");
-//                stringBuffer.append("Reserve Price: £").append(auction.getReservePrice()).append("\n");
-//                stringBuffer.append("Item Description: ").append(auction.getItemDescription()).append("\n");
-//                stringBuffer.append("Close Date: ").append(auction.getCloseDate()).append("\n");
-//                stringBuffer.append("======================================").append("\n");
-//                counter++;
-//            }
-//        }
-        List<Auction> activeAuctions =
-                auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
-
-        int i = 1;
-        for (Auction auction : activeAuctions) {
-            System.out.print("Auction " + i + ": ");
-            System.out.println(auction.getItemDescription());
-            i++;
-        }
-        System.out.println();
-    }
-
-    private void setUpAccount() throws ParseException {
-        System.out.println("Please enter a username: ");
-
-        String username = scanner.nextLine();
-
-        boolean usernameValid = false;
-
-        // check if the username is a valid name
-        while (!usernameValid) {
-            // if a user exists with this name then they cannot create a user with this username
-            if (getUserByUsername(username) == null) usernameValid = true;
-        }
-
-        System.out.println("Now please enter a password: ");
-        String password = scanner.nextLine();
-
-        System.out.println("Please confirm your password: ");
-        String confirmPassword = scanner.nextLine();
-
-        System.out.println("Would you like to be a buyer or seller (B | S)?");
-        String userType = scanner.nextLine();
-
-        if (password.equals(confirmPassword)) {
-            // valid! lets create this user
-            if (userType.equalsIgnoreCase("S") || userType.equalsIgnoreCase("Seller")) {
-                users.add(new Seller(username, password));
-                System.out.println("Your account has been successfully created");
-            } else {
-                users.add(new Buyer(username, password));
-                System.out.println("Your account has been successfully created");
-            }
-        } else {
-            System.out.println("Sorry there was a problem creating your account, please try again");
-        }
-
-    }
+    /**
+     * MENUS
+     */
 
     void startMenu(List<User> users, List<Auction> auctions) throws ParseException {
         this.users = users;
         this.auctions = auctions;
         String option = "";
-        do {
+        while (!(option.equals("4"))) {
             if (loggedInUser != null) {
                 if (Seller.class.isInstance(loggedInUser)) {
                     // they are a seller
@@ -117,17 +58,15 @@ public class Sys {
                         System.exit(0);
                 }
             }
-        } while (!option.equals("4"));
+        }
     }
 
     private void sellerMenu() throws ParseException {
-        scanner.reset();
         System.out.println(" which would you like?");
         System.out.println("1. Create Auction");
         System.out.println("2. Verify Auction");
         System.out.println("3. Logout");
         System.out.println("4. Quit");
-
         String option = scanner.nextLine();
 
         switch (option) {
@@ -165,10 +104,51 @@ public class Sys {
             case "3":
                 logout();
                 break;
-            default:
+            case "4":
                 System.out.println("Goodbye");
                 System.exit(0);
         }
+    }
+
+    /**
+     * SET UP AND LOGIN
+     */
+
+    private void setUpAccount() throws ParseException {
+        System.out.println("Please enter a username: ");
+
+        String username = scanner.nextLine();
+
+        boolean usernameValid = false;
+
+        // check if the username is a valid name
+        while (!usernameValid) {
+            // if a user exists with this name then they cannot create a user with this username
+            if (getUserByUsername(username) == null) usernameValid = true;
+        }
+
+        System.out.println("Now please enter a password: ");
+        String password = scanner.nextLine();
+
+        System.out.println("Please confirm your password: ");
+        String confirmPassword = scanner.nextLine();
+
+        System.out.println("Would you like to be a buyer or seller (B | S)?");
+        String userType = scanner.nextLine();
+
+        if (password.equals(confirmPassword)) {
+            // valid! lets create this user
+            if (userType.equalsIgnoreCase("S") || userType.equalsIgnoreCase("Seller")) {
+                users.add(new Seller(username, password));
+                System.out.println("Your account has been successfully created");
+            } else {
+                users.add(new Buyer(username, password));
+                System.out.println("Your account has been successfully created");
+            }
+        } else {
+            System.out.println("Sorry there was a problem creating your account, please try again");
+        }
+
     }
 
     private User getUserByUsername(String username) {
@@ -217,7 +197,15 @@ public class Sys {
         }
     }
 
-    private void createAuction(Seller seller) throws ParseException {
+    private void logout() {
+        loggedInUser = null;
+    }
+
+    /**
+     * SELLER FUNCTIONALITY
+     */
+
+    private void createAuction(Seller seller) {
         SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
         System.out.println("Please enter the item description for your auction");
@@ -229,10 +217,16 @@ public class Sys {
         System.out.println("Please enter the reserve price for your auction");
         double reservePrice = scanner.nextDouble();
 
-        System.out.println("Please enter the close date for your auction");
-        String closeDate = scanner.next();
+        scanner.nextLine();
 
-        Auction auction = new Auction(startPrice, reservePrice, LocalDateTime.parse(closeDate), Status.PENDING, new Item(itemDesc), seller);
+        System.out.println("Please enter the close date for your auction in the format of yyyy-MM-dd HH:mm");
+        String closeDate = scanner.nextLine();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        LocalDateTime closing = LocalDateTime.parse(closeDate, formatter);
+
+        Auction auction = new Auction(startPrice, reservePrice, closing, Status.PENDING, new Item(itemDesc), seller);
         auctions.add(auction);
 
         System.out.println("Auction created, The auction is now in a pending state and must first be verified");
@@ -266,11 +260,86 @@ public class Sys {
 
     }
 
+    /**
+     * BUYER FUNCTIONALITY
+     */
+
     private void placeBid() {
+        List<Auction> activeAuctions = auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
+
+        if (activeAuctions.isEmpty()) {
+            System.out.println("Sorry there ar currently no active auctions to bid on");
+            return;
+        }
+
+        System.out.println("Please choose from the list of active auctions:");
+        browseAuction(auctions);
+
+        int choice = scanner.nextInt();
+
+        Auction auction = activeAuctions.get((choice - 1));
+
+        double minimum = 0;
+
+        if (auction.getBids() != null) {
+            List<Bid> bids = auction.getBids();
+            for (Bid bid : bids) {
+                if (bid.getAmount() >= minimum) {
+                    minimum = bid.getAmount();
+                }
+            }
+        }
+        double maximum = minimum * 1.2;
+        minimum *= 1.1;
+        boolean validBid = false;
+
+        if (maximum == 0) {
+            maximum = auction.getReservePrice();
+        }
+
+        while (!validBid) {
+            System.out.println("Please enter the amount you would like to bid between £" + minimum + " and £" + maximum);
+
+            double bid = scanner.nextDouble();
+
+            if (bid <= maximum && bid >= minimum) {
+                // valid bid
+                validBid = true;
+                Bid userBid = new Bid(bid, (Buyer) loggedInUser, LocalDateTime.now());
+
+                auction.placeBid(userBid);
+                System.out.println("Your bid of £" + bid + " has successfully been placed on the auction");
+
+            } else {
+                // invalid bid
+                System.out.println("Sorry that bid was invalid, lets try this again");
+            }
+        }
     }
 
-    private void logout() {
-        loggedInUser = null;
+    private void browseAuction(List<Auction> auctions) {
+//        for (Auction auction : auctions) {
+//            if (auction.getStatus() == 'A') {
+//                stringBuffer.append("Auction ").append(counter).append("\n").append("======================================").append("\n");
+//                stringBuffer.append("Start Price: £").append(auction.getStartPrice()).append("\n");
+//                stringBuffer.append("Reserve Price: £").append(auction.getReservePrice()).append("\n");
+//                stringBuffer.append("Item Description: ").append(auction.getItemDescription()).append("\n");
+//                stringBuffer.append("Close Date: ").append(auction.getCloseDate()).append("\n");
+//                stringBuffer.append("======================================").append("\n");
+//                counter++;
+//            }
+//        }
+        List<Auction> activeAuctions =
+                auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
+
+        int i = 1;
+        for (Auction auction : activeAuctions) {
+            System.out.print("Auction " + i + ": ");
+            System.out.println(auction.getItemDescription());
+            i++;
+        }
+        System.out.println();
     }
+
 
 }

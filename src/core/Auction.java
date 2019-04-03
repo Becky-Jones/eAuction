@@ -1,6 +1,7 @@
 package core;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,13 +30,14 @@ public class Auction {
         this.status = status;
         this.item = item;
         this.seller = seller;
+        this.bids = new ArrayList<>();
     }
 
     /*
 
      */
-    public void placeBid() {
-
+    public void placeBid(Bid userBid) {
+        this.bids.add(userBid);
     }
 
     /*

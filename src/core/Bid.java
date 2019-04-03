@@ -1,18 +1,19 @@
 package core;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Bid {
     private double amount;
     private Buyer who;
+    private LocalDateTime when;
 
-    public Bid(double amount, Buyer who, Date when) {
+    public Bid(double amount, Buyer who, LocalDateTime when) {
         this.amount = amount;
         this.who = who;
         this.when = when;
     }
 
-    private Date when;
 
     public double getAmount() {
         return amount;
@@ -30,11 +31,11 @@ public class Bid {
         this.who = who;
     }
 
-    public Date getWhen() {
+    public LocalDateTime getWhen() {
         return when;
     }
 
-    public void setWhen(Date when) {
+    public void setWhen(LocalDateTime when) {
         this.when = when;
     }
 }
