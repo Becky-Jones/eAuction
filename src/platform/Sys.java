@@ -1,7 +1,9 @@
 package platform;
 
 import core.*;
+import sun.java2d.pipe.SpanShapeRenderer;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,6 +18,7 @@ public class Sys {
     private final Scanner scanner = new Scanner(System.in).useDelimiter("\\R+");
     private List<Auction> auctions = new LinkedList<>();
     private User loggedInUser;
+    private static DecimalFormat df = new DecimalFormat(".##");
 
     /**
      * MENUS
@@ -69,7 +72,7 @@ public class Sys {
         System.out.println("4. Quit");
         String option = scanner.nextLine();
 
-        if(option.equalsIgnoreCase("")){
+        if (option.equalsIgnoreCase("")) {
             option = scanner.nextLine();
         }
 
@@ -98,7 +101,7 @@ public class Sys {
 
         String option = scanner.nextLine();
 
-        if(option.equalsIgnoreCase("")){
+        if (option.equalsIgnoreCase("")) {
             option = scanner.nextLine();
         }
         switch (option) {
@@ -226,12 +229,29 @@ public class Sys {
 
         scanner.nextLine();
 
-        System.out.println("Please enter the close date for your auction in the format of yyyy-MM-dd HH:mm");
-        String closeDate = scanner.nextLine();
+        LocalDateTime closing = LocalDateTime.now();
+        boolean validDate = false;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        while (!validDate) {
+            System.out.println("Please enter the close date for your auction in the format of yyyy-MM-dd HH:mm");
+            String closeDate = scanner.nextLine();
 
-        LocalDateTime closing = LocalDateTime.parse(closeDate, formatter);
+            if (!(closeDate.contains("-") && closeDate.contains(":") & closeDate.length() <= 16)) {
+                // invalid!
+                System.out.println("Sorry that cloe date isn't valid, please try again");
+                continue;
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+            closing = LocalDateTime.parse(closeDate, formatter);
+
+            if (closing.isBefore(LocalDateTime.now())) {
+                System.out.println("Sorry you have entered a past date, please try again");
+                continue;
+            }
+            validDate = true;
+        }
 
         Auction auction = new Auction(startPrice, reservePrice, closing, Status.PENDING, new Item(itemDesc), seller);
         auctions.add(auction);
@@ -278,21 +298,29 @@ public class Sys {
             System.out.println("Sorry there ar currently no active auctions to bid on");
             return;
         }
+        int choice = 0;
+        boolean isValid = false;
+        while (!isValid) {
+            System.out.println("Please choose from the list of active auctions:");
+            browseAuction(auctions);
 
-        System.out.println("Please choose from the list of active auctions:");
-        browseAuction(auctions);
+            choice = scanner.nextInt();
 
-        int choice = scanner.nextInt();
-
+            if (choice > auctions.size() || choice == 0) {
+                System.out.println("Sorry that auction doesn't exist,");
+            } else {
+                isValid = true;
+            }
+        }
         Auction auction = activeAuctions.get((choice - 1));
 
-        double minimum = 0;
+        double minimum = 0.0;
 
         if (auction.getBids() != null) {
             List<Bid> bids = auction.getBids();
 
             // get the maximum bid out of the list of bids and set it as the minimum
-            if(bids.size() > 0) {
+            if (bids.size() > 0) {
                 minimum = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get().getAmount();
             }
         }
@@ -305,8 +333,9 @@ public class Sys {
             maximum = auction.getReservePrice();
         }
 
+
         while (!validBid) {
-            System.out.println("Please enter the amount you would like to bid between £" + minimum + " and £" + maximum);
+            System.out.println("Please enter the amount you would like to bid between £" + df.format(minimum) + " and £" + df.format(maximum));
 
             double bid = scanner.nextDouble();
 
@@ -316,7 +345,7 @@ public class Sys {
                 Bid userBid = new Bid(bid, (Buyer) loggedInUser, LocalDateTime.now());
 
                 auction.placeBid(userBid);
-                System.out.println("Your bid of £" + bid + " has successfully been placed on the auction");
+                System.out.println("Your bid of £" + df.format(bid) + " has successfully been placed on the auction");
 
             } else {
                 // invalid bid
@@ -341,12 +370,32 @@ public class Sys {
                 auctions.stream().filter(o -> o.getStatus().equals(Status.ACTIVE)).collect(Collectors.toList());
 
         int i = 1;
+        StringBuffer sb = new StringBuffer();
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+
         for (Auction auction : activeAuctions) {
-            System.out.print("Auction " + i + ": ");
-            System.out.println(auction.getItemDescription());
+
+            sb.append("Auction ");
+            sb.append(i);
+            sb.append(": ");
+            sb.append(auction.getItemDescription());
+            sb.append("\n - closes on ");
+            sb.append(auction.getCloseDate().getDayOfWeek().toString().toLowerCase());
+            sb.append(" ");
+            sb.append(auction.getCloseDate().getDayOfMonth());
+            sb.append(" ");
+            sb.append(auction.getCloseDate().getMonth().toString().toLowerCase());
+            sb.append(" ");
+            sb.append(auction.getCloseDate().getYear());
+            sb.append(" at ");
+            sb.append(auction.getCloseDate().getHour());
+            sb.append(":");
+            sb.append(auction.getCloseDate().getMinute());
+            sb.append("\n");
             i++;
         }
-        System.out.println();
+        System.out.println(sb);
     }
 
 
