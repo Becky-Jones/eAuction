@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Entry {
 
@@ -38,16 +40,21 @@ public class Entry {
             }
         };
 
-        // 1 thread for the timer
-        ExecutorService es = Executors.newFixedThreadPool(1);
+        // Scheduled Executor Service for running the timer
+        ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 
-        // start timer thread
-        es.submit(timer);
+        ses.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                // Check for expired auctions
+                statusCheck.run();
+            }
+        }, 0, 30, TimeUnit.SECONDS);  // execute every 30 seconds
 
         // Start Menu Sequence
         sys.startMenu(users, auctions);
 
         // Close all threads
-        es.shutdown();
+        ses.shutdown();
     }
 }

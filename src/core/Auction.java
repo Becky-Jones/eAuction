@@ -2,8 +2,10 @@ package core;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -57,21 +59,29 @@ public class Auction {
      */
     public void close() {
 
-        List bids = getBids();
+        List<Bid> bids = getBids();
 
-
-        if (bids.size() == 0) {
-            // auction is expired
-        } else {
-            buyer.victory(this);
-        }
         // Set auction status to closed
         this.status = Status.CLOSED;
 
-        // TODO: Check if the auction was won or expired
-        // TODO: Call victory()
+        // Checks if anyone placed a bid on the auction
+        if (bids.size() == 0) {
+            // auction is expired with no bids, therefore no winner
+            System.out.println(getItemDescription() + " has expired with no winner.");
+            return;
+        }
 
+        // Get the max bid
+        Bid maxBid = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get();
 
+        // Check if the max bid doesn't meet the reserve price
+        if(maxBid.getAmount() < getReservePrice()){
+            System.out.println(getItemDescription() + " has expired with no winner.");
+            return; // Reserve price not met, thus there is no winner
+        }
+
+        // Inform the winning buyer of their victory
+        buyer.victory(this);
     }
 
     /*

@@ -11,7 +11,7 @@ public class StatusCheck implements Runnable{
 
     @Override
     public void run(){
-        System.out.println("Checking end of all ACTIVE auctions...");
+        System.out.println("Checking for expired Auctions...");
         for(int i = 0; i<auctions.size(); i++){
             Auction auction = auctions.get(i);
 

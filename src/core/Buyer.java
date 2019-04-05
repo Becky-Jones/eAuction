@@ -11,10 +11,10 @@ public class Buyer extends User {
     }
 
     public void victory(Auction auction) {
-        System.out.println("Buyer with username \'" +
-                this.getUsername() +
+        System.out.println("Buyer with username \'" + getUsername() +
                 "\' was the victor in this auction: " +
-                auction.getItemDescription()
+                auction.getItemDescription() + " at this price: £" +
+                auction.getWinningBid().getAmount()
         );
     }
 
