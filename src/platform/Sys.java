@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Sys {
 
     private static List<User> users = new LinkedList<>();
-    private final Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in).useDelimiter("\\R+");
     private List<Auction> auctions = new LinkedList<>();
     private User loggedInUser;
 
@@ -69,6 +69,10 @@ public class Sys {
         System.out.println("4. Quit");
         String option = scanner.nextLine();
 
+        if(option.equalsIgnoreCase("")){
+            option = scanner.nextLine();
+        }
+
         switch (option) {
             case "1":
                 createAuction((Seller) loggedInUser);
@@ -94,6 +98,9 @@ public class Sys {
 
         String option = scanner.nextLine();
 
+        if(option.equalsIgnoreCase("")){
+            option = scanner.nextLine();
+        }
         switch (option) {
             case "1":
                 browseAuction(auctions);
@@ -284,11 +291,10 @@ public class Sys {
         if (auction.getBids() != null) {
             List<Bid> bids = auction.getBids();
 
-            // get the maximum bid out of the list of bids
-            Bid maximumBid = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get();
-
-            // set the minimum
-            minimum = maximumBid.getAmount();
+            // get the maximum bid out of the list of bids and set it as the minimum
+            if(bids.size() > 0) {
+                minimum = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get().getAmount();
+            }
         }
 
         double maximum = minimum * 1.2;
