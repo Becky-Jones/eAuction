@@ -68,6 +68,7 @@ public class Auction {
 
         // Get the max bid
         Bid maxBid = bids.stream().collect(Collectors.maxBy(Comparator.comparingDouble(Bid::getAmount))).get();
+        buyer = maxBid.getWho();
 
         // Check if the max bid doesn't meet the reserve price
         if(maxBid.getAmount() < getReservePrice()){
@@ -75,6 +76,8 @@ public class Auction {
             return; // Reserve price not met, thus there is no winner
         }
 
+
+        System.out.println(getItemDescription() + " has ended with a winner.");
         // Inform the winning buyer of their victory
         buyer.victory(this);
     }
@@ -125,9 +128,6 @@ public class Auction {
                 winningBid = bid;
             }
         }
-
-        // Notifying Victorious Buyer
-        winningBid.getWho().victory(this);
 
         return winningBid;
     }
