@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class is the entry point for this application, it will contain the thread to be run throughout
+ */
 public class Entry {
 
     public static void main(String[] args) throws ParseException {
