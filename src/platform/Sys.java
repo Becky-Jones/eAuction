@@ -327,6 +327,7 @@ public class Sys {
 
         List<Auction> pendingAuctions = auctions.stream().filter(o -> o.getStatus().equals(Status.PENDING)).collect(Collectors.toList());
 
+
         // check if there are any pending auctions
         if (pendingAuctions.size() == 0) {
             System.out.println("There are no pending auctions for your account");
@@ -337,11 +338,15 @@ public class Sys {
             int i = 1;
             Map<Integer, Auction> options = new HashMap<>();
 
+            Seller seller = (Seller)loggedInUser;
             // print out the pending auctions
             for (Auction auction : pendingAuctions) {
-                options.put(i, auction);
-                System.out.println("Auction " + i + ": " + auction.getItemDescription());
-                i++;
+                // if the auction belongs to the seller
+                if (auction.seller == seller) {
+                    options.put(i, auction);
+                    System.out.println("Auction " + i + ": " + auction.getItemDescription());
+                    i++;
+                }
             }
 
             int choice = scanner.nextInt();

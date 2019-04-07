@@ -20,7 +20,7 @@ public class Auction {
     private LocalDateTime closeDate;
     private Status status;
     private Item item;
-    Seller seller;
+    public Seller seller;
     Buyer buyer;
     private List<Bid> bids;
 
