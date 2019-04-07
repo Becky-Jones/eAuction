@@ -1,40 +1,34 @@
 package core;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 import java.util.List;
 
-public class StatusCheck implements Runnable{
-
-    public List<Auction> auctions = new LinkedList<>();
-    Integer delay;
+/**
+ * This class is for periodically checking for expired auctions to close
+ */
+public class StatusCheck implements Runnable {
+    private final List<Auction> auctions;
 
     @Override
-    public void run(){
-        for(int i = 0; i<auctions.size(); i++){
-            Auction auction = auctions.get(i);
-
+    public void run() {
+        for (Auction auction : auctions) {
             // Only check auctions with an ACTIVE status
-            if(auction.getStatus()==Status.ACTIVE){
-                if(auction.getCloseDate().isBefore(LocalDateTime.now())){
-                    System.out.println("Closing Auction");
-                    // Close the auction if it has expired
+            if (auction.getStatus() == Status.ACTIVE) {
+                // Close the auction if it has expired
+                if (auction.getCloseDate().isBefore(LocalDateTime.now())) {
                     auction.close();
                 }
             }
         }
     }
 
-    public StatusCheck(List<Auction> auctions, int seconds) {
+    /**
+     * This constructor will set the list of auctions for this Class.
+     *
+     * @param auctions the list of auctions
+     */
+    public StatusCheck(List<Auction> auctions) {
         this.auctions = auctions;
-        setSeconds(seconds);
-    }
-
-    private synchronized void setSeconds(int seconds) {
-        this.delay = seconds * 1000;
-    }
-
-    public int getSeconds() {
-        return delay;
+        //setSeconds(seconds);
     }
 }

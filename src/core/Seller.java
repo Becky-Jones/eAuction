@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * This class will set the user as a Seller who can then create and verify auctions
  */
-public class Seller extends User {
+public class Seller extends User implements Blockable {
 
     /**
      * Private Fields

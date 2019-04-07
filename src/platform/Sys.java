@@ -1,12 +1,8 @@
 package platform;
 
 import core.*;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -15,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * This class is the main class to be used in the system for the user, containing the menus and options
  */
-public class Sys {
+class Sys {
     /**
      * Private Fields
      */
@@ -23,7 +19,7 @@ public class Sys {
     private final Scanner scanner = new Scanner(System.in).useDelimiter("\\R+");
     private List<Auction> auctions = new LinkedList<>();
     private User loggedInUser;
-    private static DecimalFormat df = new DecimalFormat(".##");
+    private static final DecimalFormat df = new DecimalFormat(".##");
 
     /*
      * MENUS

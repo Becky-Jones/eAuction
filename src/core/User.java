@@ -7,13 +7,13 @@ public abstract class User implements Blockable, Runnable {
     /**
      * Protected Fields
      */
-    protected String username;
-    protected String password;
+    private String username;
+    private String password;
 
     /**
      * An empty constructor
      */
-    public User() {
+    User() {
     }
 
     /**
@@ -22,7 +22,7 @@ public abstract class User implements Blockable, Runnable {
      * @param username the username for the user
      * @param password the password for the user
      */
-    public User(String username, String password) {
+    User(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -50,7 +50,7 @@ public abstract class User implements Blockable, Runnable {
      *
      * @return the password as a string
      */
-    public String getPassword() {
+    private String getPassword() {
         return password;
     }
 
@@ -66,7 +66,7 @@ public abstract class User implements Blockable, Runnable {
     /**
      * This method will check that the password entered is valid
      *
-     * @return
+     * @return true if the password matches
      */
     public boolean checkPassword(String password) {
 

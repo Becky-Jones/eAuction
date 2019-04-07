@@ -1,6 +1,6 @@
 package core;
 
-public interface Blockable {
+interface Blockable {
 
     /**
      * This method will change the status to be Blocked

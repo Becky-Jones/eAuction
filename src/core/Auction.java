@@ -3,7 +3,6 @@ package core;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,7 @@ public class Auction {
     private Status status;
     private Item item;
     public Seller seller;
-    Buyer buyer;
+    private Buyer buyer;
     private List<Bid> bids;
 
     /**
